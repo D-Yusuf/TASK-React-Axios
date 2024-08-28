@@ -1,7 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import petsData from "../petsData";
+import { getPetById } from "../API/pets";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "./Loader";
 const PetDetail = () => {
-  const pet = petsData[0];
+  const {id} = useParams()
+  // useEffect(()=>{
+  //   async function getPet(){
+  //     const res = await getPetById(id)
+  //     setPet(res)
+  //   }
+  //   getPet()
+  //   console.log(pet)
+  // }, [id])
+
+  const { data:pet, isPending } = useQuery({
+    queryKey: [`getPet${id}`],
+    queryFn: ()=> getPetById(id),
+  })
+  if(isPending){
+    return <Loader />
+  }
   return (
     <div className="bg-[#F9E3BE] w-screen h-[100vh] flex justify-center items-center">
       <div className="border border-black rounded-md w-[70%] h-[70%] overflow-hidden flex flex-col md:flex-row p-5">

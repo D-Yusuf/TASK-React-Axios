@@ -1,11 +1,28 @@
 import React, { useState } from "react";
 import Input from "./Input";
-
+import {addPet} from "../API/pets"
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 const Modal = ({ show, setShowModal }) => {
+  const queryClient = useQueryClient()
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [image, setImage] = useState("");
-  const [available, setAvailable] = useState(0);
+  const [available, setAvailable] = useState(false);
+  const {mutate} = useMutation({
+    mutationKey: ["addPet"],
+    mutationFn: ()=> addPet(name, type, image, available),
+    onSuccess : ()=>{
+      queryClient.invalidateQueries(["getAllPets"])
+    },
+    onError: ()=>{
+      alert("An error has happened with your request")
+    }
+  })
+  
+  // async function add(){
+  //   const res = await addPet(name, type, image, available)
+  //   console.log(res)
+  // }
   if (!show) return "";
   return (
     <div
@@ -47,7 +64,7 @@ const Modal = ({ show, setShowModal }) => {
           }}
         />
 
-        <button className="w-[70px] border border-black rounded-md ml-auto mr-5 hover:bg-green-400">
+        <button onClick={mutate} className="w-[70px] border border-black rounded-md ml-auto mr-5 hover:bg-green-400">
           Submit
         </button>
       </div>

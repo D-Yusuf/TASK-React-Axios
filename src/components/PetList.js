@@ -1,23 +1,34 @@
 import React, { useState } from "react";
-import { getAllPets } from "../API/pets";
+import { getAllPets, deletePet } from "../API/pets";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import PetItem from "./PetItem";
 import Modal from "./Modal";
+import Loader from "./Loader";
 
 const PetList = () => {
-  const [pets, setPets] = useState([])
   const [query, setQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
-  async function getPets(){
-    const res = await getAllPets()
-    setPets(res)
+  const {data: pets, isPending} = useQuery({
+    queryKey: ["getAllPets"],
+    queryFn: getAllPets,
+  })
+  const {mutate} = useMutation({
+    mutateKey: ["deletePet"],
+    mutateFn: ()=> deletePet(),
+  })
+  console.log(mutate)
+  if(isPending){
+    return <Loader />
   }
-  const petList = pets
-    .filter((pet) => pet.name.toLowerCase().includes(query.toLowerCase()))
+  const petList = pets?.filter((pet) => pet.name.toLowerCase().includes(query.toLowerCase()))
     .map((pet) => <PetItem pet={pet} key={pet.id} />);
   return (
     <>
+    <button onClick={mutate} className="w-[70px] border border-black rounded-md ml-auto mr-5 hover:bg-green-400">
+          ssass
+        </button>
       <div className="bg-[#F9E3BE] flex flex-col justify-center items-center ">
-        <button className="bg-white p-4 rounded-md" onClick={getPets}>Show Pets</button>
+        {/* <button className="bg-white p-4 rounded-md" onClick={getPets}>Show Pets</button> */}
         <div className="w-[76vw] flex h-[30px] mb-[30px] mt-[30px]">
           <input
             onChange={(e) => {
