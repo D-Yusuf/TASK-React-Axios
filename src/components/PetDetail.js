@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import petsData from "../petsData";
-import { getPetById } from "../API/pets";
+import { deletePet, getPetById } from "../API/pets";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 const PetDetail = () => {
+  const navigate = useNavigate()
   const {id} = useParams()
   // useEffect(()=>{
   //   async function getPet(){
@@ -14,10 +16,15 @@ const PetDetail = () => {
   //   getPet()
   //   console.log(pet)
   // }, [id])
-
+  
   const { data:pet, isPending } = useQuery({
     queryKey: [`getPet${id}`],
     queryFn: ()=> getPetById(id),
+  })
+  const {mutate: delete_pet} = useMutation({
+    mutationKey: [`delete${id}`],
+    mutationFn: ()=> deletePet(id),
+    onSuccess: ()=> navigate("/pets")
   })
   if(isPending){
     return <Loader />
@@ -41,7 +48,7 @@ const PetDetail = () => {
             Adobt
           </button>
 
-          <button className="w-[70px] border border-black rounded-md  hover:bg-red-400">
+          <button onClick={delete_pet} className="w-[70px] border border-black rounded-md  hover:bg-red-400">
             Delete
           </button>
         </div>

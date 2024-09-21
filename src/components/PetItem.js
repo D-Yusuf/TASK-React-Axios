@@ -7,11 +7,11 @@ const PetItem = ({ pet }) => {
       <h1 className="text-md font-bold">{pet.name}</h1>
       <img
         src={pet.image}
-        alt={`${pet.name}-image`}
+        alt={`${pet.name}-img`}
         className="w-[200px] rounded-md
       "
       />
-      <Link to={`/pets/${pet.id}`} className=" border border-black px-5 py-1 rounded-md hover:bg-[black] hover:text-white">
+      <Link to={`/pets/${pet._id}`} className=" border border-black px-5 py-1 rounded-md hover:bg-[black] hover:text-white">
         View
       </Link>
     </div>
